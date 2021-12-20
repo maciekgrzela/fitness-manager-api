@@ -4,7 +4,6 @@ namespace FitnessManager.DataAccess.Entities
 {
     public class CustomerSubscriptionsEntity : BaseEntity
     {
-        public Guid Id { get; set; }
         public Guid CustomerId { get; set; }
         public CustomerEntity Customer { get; set; }
         public Guid SubscriptionId { get; set; }

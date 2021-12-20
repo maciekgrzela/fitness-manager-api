@@ -7,7 +7,7 @@ namespace FitnessManager.DataAccess.Entities.EntitiesConfiguration
     {
         public void Configure(EntityTypeBuilder<InstructorEntity> builder)
         {
-            throw new System.NotImplementedException();
+            builder.ToTable("Instructors");
         }
     }
 }

@@ -7,7 +7,19 @@ namespace FitnessManager.DataAccess.Entities.EntitiesConfiguration
     {
         public void Configure(EntityTypeBuilder<FitnessClubEntity> builder)
         {
-            throw new System.NotImplementedException();
+            builder.ToTable("FitnessClubs");
+
+            builder
+                .HasOne(p => p.FitnessClubNetwork)
+                .WithMany(p => p.FitnessClubs)
+                .HasForeignKey(p => p.FitnessClubNetworkId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            builder
+                .HasMany(p => p.Halls)
+                .WithOne(p => p.FitnessClub)
+                .HasForeignKey(p => p.FitnessClubId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

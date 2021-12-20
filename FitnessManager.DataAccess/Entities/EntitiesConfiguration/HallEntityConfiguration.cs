@@ -7,7 +7,13 @@ namespace FitnessManager.DataAccess.Entities.EntitiesConfiguration
     {
         public void Configure(EntityTypeBuilder<HallEntity> builder)
         {
-            throw new System.NotImplementedException();
+            builder.ToTable("Halls");
+
+            builder
+                .HasMany(p => p.SportsEquipments)
+                .WithOne(p => p.Hall)
+                .HasForeignKey(p => p.HallId)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

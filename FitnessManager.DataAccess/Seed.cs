@@ -5,7 +5,7 @@ using FitnessManager.DataAccess.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 
-namespace FitnessManager.API
+namespace FitnessManager.DataAccess
 {
     public static class Seed
     {

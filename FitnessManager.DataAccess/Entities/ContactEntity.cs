@@ -1,9 +1,11 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace FitnessManager.DataAccess.Entities
 {
     public class ContactEntity
     {
+        [Key]
         public Guid Id { get; set; }
         public string PhoneNumber { get; set; }
         public string Email { get; set; }

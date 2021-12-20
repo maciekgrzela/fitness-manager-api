@@ -1,4 +1,5 @@
 ﻿using System;
+using FitnessManager.DataAccess;
 using FitnessManager.DataAccess.Context;
 using FitnessManager.DataAccess.Entities;
 using Microsoft.AspNetCore.Identity;

@@ -46,7 +46,6 @@ namespace FitnessManager.DataAccess.Context
             builder.ApplyConfiguration(new InstructorEntityConfiguration());
             builder.ApplyConfiguration(new SportsEquipmentEntityConfiguration());
             builder.ApplyConfiguration(new SubscriptionEntityConfiguration());
-            builder.ApplyConfiguration(new UserEntityConfiguration());
             
             base.OnModelCreating(builder);
         }

@@ -5,7 +5,6 @@ using FitnessManager.BusinessLogic.Common.Interfaces;
 using FitnessManager.BusinessLogic.Membership;
 using FitnessManager.DataAccess.Context;
 using FitnessManager.DataAccess.Entities;
-using FitnessManager.Infrastructure;
 using FitnessManager.Infrastructure.Security;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -32,8 +31,7 @@ namespace FitnessManager.API
         {
             services.AddDbContext<DataContext>(opt =>
             {
-                opt.UseMySql(Configuration.GetConnectionString("DefaultDevConnection"),
-                    ServerVersion.AutoDetect(Configuration.GetConnectionString("DefaultDevConnection")));
+                opt.UseSqlServer(Configuration.GetConnectionString("DevSql"));
             });
             
             ConfigureServices(services);
@@ -43,8 +41,7 @@ namespace FitnessManager.API
         {
             services.AddDbContext<DataContext>(opt =>
             {
-                opt.UseMySql(Configuration.GetConnectionString("DefaultProdConnection"),
-                    ServerVersion.AutoDetect(Configuration.GetConnectionString("DefaultProdConnection")));
+                opt.UseSqlServer(Configuration.GetConnectionString("ProdSql"));
             });
             
             ConfigureServices(services);
