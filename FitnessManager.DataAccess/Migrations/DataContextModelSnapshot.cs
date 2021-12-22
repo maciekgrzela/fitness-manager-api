@@ -733,7 +733,7 @@ namespace FitnessManager.DataAccess.Migrations
                     b.HasOne("FitnessManager.DataAccess.Entities.FitnessClubEntity", "FitnessClub")
                         .WithOne("BaseAddress")
                         .HasForeignKey("FitnessManager.DataAccess.Entities.AddressEntity", "FitnessClubId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("FitnessManager.DataAccess.Entities.UserEntity", "User")
@@ -768,7 +768,7 @@ namespace FitnessManager.DataAccess.Migrations
                     b.HasOne("FitnessManager.DataAccess.Entities.FitnessClubEntity", "FitnessClub")
                         .WithOne("BaseContact")
                         .HasForeignKey("FitnessManager.DataAccess.Entities.ContactEntity", "FitnessClubId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("FitnessManager.DataAccess.Entities.InstructorEntity", "Instructor")

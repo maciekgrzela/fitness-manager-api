@@ -413,7 +413,7 @@ namespace FitnessManager.DataAccess.Migrations
                         column: x => x.FitnessClubId,
                         principalTable: "FitnessClubs",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -458,7 +458,7 @@ namespace FitnessManager.DataAccess.Migrations
                         column: x => x.FitnessClubId,
                         principalTable: "FitnessClubs",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Contacts_Instructors_InstructorId",
                         column: x => x.InstructorId,

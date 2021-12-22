@@ -27,7 +27,7 @@ namespace FitnessManager.DataAccess.Entities.EntitiesConfiguration
                 .HasOne(p => p.FitnessClub)
                 .WithOne(p => p.BaseAddress)
                 .HasForeignKey<AddressEntity>(p => p.FitnessClubId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
             
             builder
                 .HasOne(p => p.User)

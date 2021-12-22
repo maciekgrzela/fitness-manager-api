@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitnessManager.DataAccess.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20211220212901_InitMigration")]
+    [Migration("20211222175415_InitMigration")]
     partial class InitMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -735,7 +735,7 @@ namespace FitnessManager.DataAccess.Migrations
                     b.HasOne("FitnessManager.DataAccess.Entities.FitnessClubEntity", "FitnessClub")
                         .WithOne("BaseAddress")
                         .HasForeignKey("FitnessManager.DataAccess.Entities.AddressEntity", "FitnessClubId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("FitnessManager.DataAccess.Entities.UserEntity", "User")
@@ -770,7 +770,7 @@ namespace FitnessManager.DataAccess.Migrations
                     b.HasOne("FitnessManager.DataAccess.Entities.FitnessClubEntity", "FitnessClub")
                         .WithOne("BaseContact")
                         .HasForeignKey("FitnessManager.DataAccess.Entities.ContactEntity", "FitnessClubId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("FitnessManager.DataAccess.Entities.InstructorEntity", "Instructor")
