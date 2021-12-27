@@ -4,14 +4,16 @@ using FitnessManager.DataAccess.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FitnessManager.DataAccess.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20211227134631_InitialMigration")]
+    partial class InitialMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,13 +33,13 @@ namespace FitnessManager.DataAccess.Migrations
                     b.Property<string>("Country")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("CustomerId")
+                    b.Property<Guid>("CustomerId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("DepartmentId")
+                    b.Property<Guid>("DepartmentId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("FitnessClubId")
+                    b.Property<Guid>("FitnessClubId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Number")
@@ -55,16 +57,13 @@ namespace FitnessManager.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId")
-                        .IsUnique()
-                        .HasFilter("[CustomerId] IS NOT NULL");
+                        .IsUnique();
 
                     b.HasIndex("DepartmentId")
-                        .IsUnique()
-                        .HasFilter("[DepartmentId] IS NOT NULL");
+                        .IsUnique();
 
                     b.HasIndex("FitnessClubId")
-                        .IsUnique()
-                        .HasFilter("[FitnessClubId] IS NOT NULL");
+                        .IsUnique();
 
                     b.HasIndex("UserId")
                         .IsUnique()
@@ -79,10 +78,10 @@ namespace FitnessManager.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("CustomerId")
+                    b.Property<Guid>("CustomerId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("DepartmentId")
+                    b.Property<Guid>("DepartmentId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Email")
@@ -91,13 +90,13 @@ namespace FitnessManager.DataAccess.Migrations
                     b.Property<string>("FacebookUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("FitnessClubId")
+                    b.Property<Guid>("FitnessClubId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("InstagramUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("InstructorId")
+                    b.Property<Guid>("InstructorId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("PhoneNumber")
@@ -112,20 +111,16 @@ namespace FitnessManager.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId")
-                        .IsUnique()
-                        .HasFilter("[CustomerId] IS NOT NULL");
+                        .IsUnique();
 
                     b.HasIndex("DepartmentId")
-                        .IsUnique()
-                        .HasFilter("[DepartmentId] IS NOT NULL");
+                        .IsUnique();
 
                     b.HasIndex("FitnessClubId")
-                        .IsUnique()
-                        .HasFilter("[FitnessClubId] IS NOT NULL");
+                        .IsUnique();
 
                     b.HasIndex("InstructorId")
-                        .IsUnique()
-                        .HasFilter("[InstructorId] IS NOT NULL");
+                        .IsUnique();
 
                     b.HasIndex("UserId")
                         .IsUnique()
@@ -731,17 +726,20 @@ namespace FitnessManager.DataAccess.Migrations
                     b.HasOne("FitnessManager.DataAccess.Entities.CustomerEntity", "Customer")
                         .WithOne("Address")
                         .HasForeignKey("FitnessManager.DataAccess.Entities.AddressEntity", "CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("FitnessManager.DataAccess.Entities.DepartmentEntity", "Department")
                         .WithOne("Address")
                         .HasForeignKey("FitnessManager.DataAccess.Entities.AddressEntity", "DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("FitnessManager.DataAccess.Entities.FitnessClubEntity", "FitnessClub")
                         .WithOne("BaseAddress")
                         .HasForeignKey("FitnessManager.DataAccess.Entities.AddressEntity", "FitnessClubId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("FitnessManager.DataAccess.Entities.UserEntity", "User")
                         .WithOne("Address")
@@ -762,22 +760,26 @@ namespace FitnessManager.DataAccess.Migrations
                     b.HasOne("FitnessManager.DataAccess.Entities.CustomerEntity", "Customer")
                         .WithOne("Contact")
                         .HasForeignKey("FitnessManager.DataAccess.Entities.ContactEntity", "CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("FitnessManager.DataAccess.Entities.DepartmentEntity", "Department")
                         .WithOne("Contact")
                         .HasForeignKey("FitnessManager.DataAccess.Entities.ContactEntity", "DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("FitnessManager.DataAccess.Entities.FitnessClubEntity", "FitnessClub")
                         .WithOne("BaseContact")
                         .HasForeignKey("FitnessManager.DataAccess.Entities.ContactEntity", "FitnessClubId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("FitnessManager.DataAccess.Entities.InstructorEntity", "Instructor")
                         .WithOne("Contact")
                         .HasForeignKey("FitnessManager.DataAccess.Entities.ContactEntity", "InstructorId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("FitnessManager.DataAccess.Entities.UserEntity", "User")
                         .WithOne("Contact")

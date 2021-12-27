@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace FitnessManager.API.Controllers
 {
     [ApiController]
+    [Route("api/[controller]")]
     public class BaseController : ControllerBase
     {
         private IMapper _mapper;
@@ -39,7 +40,7 @@ namespace FitnessManager.API.Controllers
                 BusinessLogicResponseResult.AccessDenied => StatusCode((int) HttpStatusCode.Forbidden, response.ErrorMessage),
                 BusinessLogicResponseResult.ResourceDoesntExist => NotFound(response.ErrorMessage),
                 BusinessLogicResponseResult.ConflictOccured => Conflict(response.ErrorMessage),
-                BusinessLogicResponseResult.Ok => Ok(Mapper.Map<TDto>(response.Value)),
+                BusinessLogicResponseResult.Ok => Ok(Mapper.Map<TEntity, TDto>(response.Value)),
                 BusinessLogicResponseResult.Created => NoContent(),
                 BusinessLogicResponseResult.Deleted => NoContent(),
                 BusinessLogicResponseResult.Updated => NoContent(),

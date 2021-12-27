@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FitnessManager.DataAccess.Context
 {
-    public class DataContext: IdentityDbContext<UserEntity, IdentityRole<Guid>, Guid>
+    public class DataContext: IdentityDbContext<UserEntity, IdentityRole, string>
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
         
@@ -46,7 +46,7 @@ namespace FitnessManager.DataAccess.Context
             builder.ApplyConfiguration(new InstructorEntityConfiguration());
             builder.ApplyConfiguration(new SportsEquipmentEntityConfiguration());
             builder.ApplyConfiguration(new SubscriptionEntityConfiguration());
-            
+
             base.OnModelCreating(builder);
         }
 

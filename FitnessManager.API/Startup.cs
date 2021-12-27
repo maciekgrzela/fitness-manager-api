@@ -5,6 +5,8 @@ using FitnessManager.BusinessLogic.Common.Interfaces;
 using FitnessManager.BusinessLogic.Membership;
 using FitnessManager.DataAccess.Context;
 using FitnessManager.DataAccess.Entities;
+using FitnessManager.Domain.User;
+using FitnessManager.Infrastructure.Accessors;
 using FitnessManager.Infrastructure.Security;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -53,21 +55,6 @@ namespace FitnessManager.API
         {
             services.AddControllers();
 
-            services.AddHttpContextAccessor();
-
-            services.AddCors(opt =>
-            {
-                opt.AddPolicy("CorsPolicy", policy =>
-                {
-                    policy
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .WithExposedHeaders("WWW-Authenticate")
-                        .WithOrigins(Configuration.GetSection("ClientAppUrl").Value)
-                        .AllowCredentials();
-                });
-            });
-            
             services.AddSwaggerGen(c =>
             {
                 c.CustomSchemaIds(type => type.ToString());
@@ -93,10 +80,29 @@ namespace FitnessManager.API
                     }
                 });
             });
-
+            
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .WithExposedHeaders("Pagination")
+                        .WithExposedHeaders("WWW-Authenticate")
+                        .WithOrigins(Configuration.GetSection("ClientAppUrl").Value)
+                        .AllowCredentials();
+                });
+            });
+            
             var builder = services.AddIdentityCore<UserEntity>();
-            var identityBuilder = new IdentityBuilder(builder.UserType, builder.Services);
+            builder.AddRoles<IdentityRole>();
+            builder.AddRoleManager<RoleManager<IdentityRole>>();
+
+            var identityBuilder = new IdentityBuilder(builder.UserType, builder.RoleType, builder.Services);
             identityBuilder.AddEntityFrameworkStores<DataContext>();
+            identityBuilder.AddRoles<IdentityRole>();
+            identityBuilder.AddRoleManager<RoleManager<IdentityRole>>();
             identityBuilder.AddSignInManager<SignInManager<UserEntity>>();
 
             var key = SecurityKeyGenerator.Instance.GetKey();
@@ -131,10 +137,11 @@ namespace FitnessManager.API
                     };
                 });
 
+            services.AddScoped<IUserAccessor, UserAccessor>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IWebTokenGenerator, WebTokenGenerator>();
-            services.AddMediatR(typeof(Login.Query).Assembly);
-            services.AddAutoMapper(typeof(BaseEntity).Assembly);
+            services.AddMediatR(typeof(Login.Handler).Assembly);
+            services.AddAutoMapper(typeof(BaseEntity).Assembly, typeof(User).Assembly);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -148,12 +155,14 @@ namespace FitnessManager.API
             }
 
             app.UseHttpsRedirection();
-
             app.UseRouting();
-
+            app.UseCors();
+            app.UseAuthentication();
             app.UseAuthorization();
-
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers().RequireAuthorization();
+            });
         }
     }
 }
