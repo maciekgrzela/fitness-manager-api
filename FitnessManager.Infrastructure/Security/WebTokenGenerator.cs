@@ -23,7 +23,7 @@ namespace FitnessManager.Infrastructure.Security
         {
             var claims = new List<Claim>
             {
-                new(JwtRegisteredClaimNames.NameId, user.UserName),
+                new(ClaimTypes.NameIdentifier, user.Email),
                 new(ClaimTypes.Role, role)
             };
 

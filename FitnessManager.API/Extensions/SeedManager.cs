@@ -16,13 +16,14 @@ namespace FitnessManager.API.Extensions
         {
             using var scope = host.Services.CreateScope();
             using var context = scope.ServiceProvider.GetRequiredService<DataContext>();
-            using var manager = scope.ServiceProvider.GetRequiredService<UserManager<UserEntity>>();
+            using var userManager = scope.ServiceProvider.GetRequiredService<UserManager<UserEntity>>();
+            using var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
             var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
             
             try
             {
-                Seed.SeedDataAsync(context, manager, config).Wait();
+                Seed.SeedDataAsync(context, userManager, roleManager, config).Wait();
             }
             catch (Exception e)
             {

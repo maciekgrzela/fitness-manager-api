@@ -5,8 +5,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Address\Dtos\Out" />
-      <Folder Include="Contact\Dtos\Out" />
+      <PackageReference Include="AutoMapper" Version="10.1.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\FitnessManager.DataAccess\FitnessManager.DataAccess.csproj" />
     </ItemGroup>
 
 </Project>

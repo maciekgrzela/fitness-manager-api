@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using FitnessManager.BusinessLogic.Membership;
 using FitnessManager.Domain.User;
-using FitnessManager.Domain.User.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,11 +18,12 @@ namespace FitnessManager.API.Controllers
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
-        [HttpPost("/login")]
+        [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<IActionResult> LoginUserAsync([FromBody] Login.Query query)
         {
             var result = await Mediator.Send(query);
-            return HandleResponse<LoggedUser, LoggedUserDto>(result);
+            return HandleResponse<User, LoggedUserDto>(result);
         }
         
         /// <summary>
@@ -35,11 +36,11 @@ namespace FitnessManager.API.Controllers
         [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
-        [HttpPost("/login")]
+        [HttpPost("register")]
         public async Task<IActionResult> RegisterUserAsync([FromBody] Register.Query query)
         {
             var result = await Mediator.Send(query);
-            return HandleResponse<LoggedUser, LoggedUserDto>(result);
+            return HandleResponse<User, LoggedUserDto>(result);
         }
         
         /// <summary>
@@ -55,7 +56,7 @@ namespace FitnessManager.API.Controllers
         public async Task<IActionResult> GetCurrentUserAsync()
         {
             var result = await Mediator.Send(new CurrentUser.Query());
-            return HandleResponse<LoggedUser, LoggedUserDto>(result);
+            return HandleResponse<User, LoggedUserDto>(result);
         }
     }
 }

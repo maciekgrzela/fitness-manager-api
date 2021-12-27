@@ -8,9 +8,9 @@ using FitnessManager.BusinessLogic.Common;
 using FitnessManager.BusinessLogic.Common.Interfaces;
 using FitnessManager.BusinessLogic.Validators;
 using FitnessManager.DataAccess.Entities;
-using FitnessManager.Domain.Address.Dtos.In;
+using FitnessManager.Domain.Address;
 using FitnessManager.Domain.Common.Enums;
-using FitnessManager.Domain.Contact.Dtos.In;
+using FitnessManager.Domain.Contact;
 using FitnessManager.Domain.User;
 using FluentValidation;
 using MediatR;
@@ -21,7 +21,7 @@ namespace FitnessManager.BusinessLogic.Membership
 {
     public class Register
     {
-        public class Query : IRequest<BusinessLogicResponse<LoggedUser>>
+        public class Query : IRequest<BusinessLogicResponse<User>>
         {
             public string FirstName { get; set; }
             public string LastName { get; set; }
@@ -44,31 +44,33 @@ namespace FitnessManager.BusinessLogic.Membership
             }
         }
         
-        public class Handler : IRequestHandler<Query, BusinessLogicResponse<LoggedUser>>
+        public class Handler : IRequestHandler<Query, BusinessLogicResponse<User>>
         {
             private readonly UserManager<UserEntity> _userManager;
             private readonly RoleManager<IdentityRole> _roleManager;
             private readonly IWebTokenGenerator _webTokenGenerator;
             private readonly IUserAccessor _userAccessor;
+            private readonly IUnitOfWork _unitOfWork;
             private readonly IMapper _mapper;
 
-            public Handler(UserManager<UserEntity> userManager, RoleManager<IdentityRole> roleManager, IWebTokenGenerator webTokenGenerator, IUserAccessor userAccessor, IMapper mapper)
+            public Handler(UserManager<UserEntity> userManager, RoleManager<IdentityRole> roleManager, IWebTokenGenerator webTokenGenerator, IUserAccessor userAccessor, IUnitOfWork unitOfWork, IMapper mapper)
             {
                 _userManager = userManager;
                 _roleManager = roleManager;
                 _webTokenGenerator = webTokenGenerator;
                 _userAccessor = userAccessor;
+                _unitOfWork = unitOfWork;
                 _mapper = mapper;
             }
             
             
-            public async Task<BusinessLogicResponse<LoggedUser>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<BusinessLogicResponse<User>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var existingEmail = await _userManager.Users.Where(p => p.Email == request.Email).ToListAsync(cancellationToken: cancellationToken);
 
                 if (existingEmail.Count > 0)
                 {
-                    return BusinessLogicResponse<LoggedUser>.Failure(BusinessLogicResponseResult.UserIsNotAuthorized,
+                    return BusinessLogicResponse<User>.Failure(BusinessLogicResponseResult.UserIsNotAuthorized,
                         "User with this e-mail already exists");
                 }
 
@@ -77,37 +79,47 @@ namespace FitnessManager.BusinessLogic.Membership
 
                 if (userRole == EUserRole.RegularUser && requestedRole == EUserRole.Admin)
                 {
-                    return BusinessLogicResponse<LoggedUser>.Failure(BusinessLogicResponseResult.AccessDenied,
+                    return BusinessLogicResponse<User>.Failure(BusinessLogicResponseResult.AccessDenied,
                         "You don't have sufficient priviledges to create Admin's account");
                 }
 
+                var address = _mapper.Map<SaveAddressDto, Address>(request.Address);
+                var contact = _mapper.Map<SaveContactDto, Contact>(request.Contact);
+                
+                address.Id = Guid.NewGuid();
+                contact.Id = Guid.NewGuid();
+
                 var user = new UserEntity
                 {
-                    Id = Guid.NewGuid(),
+                    Id = Guid.NewGuid().ToString(),
                     FirstName = request.FirstName,
                     LastName = request.LastName,
                     UserName = request.Email,
                     Email = request.Email,
                     Role = request.Role,
-                    Address = _mapper.Map<AddressEntity>(request.Address),
-                    Contact = _mapper.Map<ContactEntity>(request.Contact)
+                    Address = _mapper.Map<Address, AddressEntity>(address),
+                    AddressId = address.Id,
+                    Contact = _mapper.Map<Contact, ContactEntity>(contact),
+                    ContactId = contact.Id
                 };
 
-                var result = await _userManager.CreateAsync(user);
+                var result = await _userManager.CreateAsync(user, request.Password);
 
                 if (!result.Succeeded)
                 {
-                    return BusinessLogicResponse<LoggedUser>.Failure(BusinessLogicResponseResult.ConflictOccured,
+                    return BusinessLogicResponse<User>.Failure(BusinessLogicResponseResult.ConflictOccured,
                         "Unable to create new user's account");
                 }
 
                 await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, request.Role));
                 await _userManager.AddToRoleAsync(user, request.Role);
 
-                var loggedUser = _mapper.Map<UserEntity, LoggedUser>(user);
+                await _unitOfWork.CommitTransactionsAsync();
+
+                var loggedUser = _mapper.Map<UserEntity, User>(user);
                 loggedUser.Token = _webTokenGenerator.CreateToken(user, request.Role);
 
-                return BusinessLogicResponse<LoggedUser>.Success(BusinessLogicResponseResult.Ok, loggedUser);
+                return BusinessLogicResponse<User>.Success(BusinessLogicResponseResult.Ok, loggedUser);
             }
         }
     }

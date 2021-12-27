@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitnessManager.DataAccess.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20211222175415_InitMigration")]
-    partial class InitMigration
+    [Migration("20211227153243_ContactNullableGuids")]
+    partial class ContactNullableGuids
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -33,13 +33,13 @@ namespace FitnessManager.DataAccess.Migrations
                     b.Property<string>("Country")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("CustomerId")
+                    b.Property<Guid?>("CustomerId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("DepartmentId")
+                    b.Property<Guid?>("DepartmentId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("FitnessClubId")
+                    b.Property<Guid?>("FitnessClubId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Number")
@@ -51,22 +51,26 @@ namespace FitnessManager.DataAccess.Migrations
                     b.Property<string>("Street")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[CustomerId] IS NOT NULL");
 
                     b.HasIndex("DepartmentId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[DepartmentId] IS NOT NULL");
 
                     b.HasIndex("FitnessClubId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[FitnessClubId] IS NOT NULL");
 
                     b.HasIndex("UserId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Addresses");
                 });
@@ -77,10 +81,10 @@ namespace FitnessManager.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CustomerId")
+                    b.Property<Guid?>("CustomerId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("DepartmentId")
+                    b.Property<Guid?>("DepartmentId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Email")
@@ -89,20 +93,20 @@ namespace FitnessManager.DataAccess.Migrations
                     b.Property<string>("FacebookUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("FitnessClubId")
+                    b.Property<Guid?>("FitnessClubId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("InstagramUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("InstructorId")
+                    b.Property<Guid?>("InstructorId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Website")
                         .HasColumnType("nvarchar(max)");
@@ -110,19 +114,24 @@ namespace FitnessManager.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[CustomerId] IS NOT NULL");
 
                     b.HasIndex("DepartmentId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[DepartmentId] IS NOT NULL");
 
                     b.HasIndex("FitnessClubId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[FitnessClubId] IS NOT NULL");
 
                     b.HasIndex("InstructorId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[InstructorId] IS NOT NULL");
 
                     b.HasIndex("UserId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Contacts");
                 });
@@ -508,9 +517,8 @@ namespace FitnessManager.DataAccess.Migrations
 
             modelBuilder.Entity("FitnessManager.DataAccess.Entities.UserEntity", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
@@ -589,11 +597,10 @@ namespace FitnessManager.DataAccess.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -617,7 +624,7 @@ namespace FitnessManager.DataAccess.Migrations
                     b.ToTable("AspNetRoles");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -630,8 +637,9 @@ namespace FitnessManager.DataAccess.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("RoleId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -640,7 +648,7 @@ namespace FitnessManager.DataAccess.Migrations
                     b.ToTable("AspNetRoleClaims");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -653,8 +661,9 @@ namespace FitnessManager.DataAccess.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -663,7 +672,7 @@ namespace FitnessManager.DataAccess.Migrations
                     b.ToTable("AspNetUserClaims");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(450)");
@@ -674,8 +683,9 @@ namespace FitnessManager.DataAccess.Migrations
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -684,13 +694,13 @@ namespace FitnessManager.DataAccess.Migrations
                     b.ToTable("AspNetUserLogins");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid>("RoleId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -699,10 +709,10 @@ namespace FitnessManager.DataAccess.Migrations
                     b.ToTable("AspNetUserRoles");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(450)");
@@ -723,26 +733,22 @@ namespace FitnessManager.DataAccess.Migrations
                     b.HasOne("FitnessManager.DataAccess.Entities.CustomerEntity", "Customer")
                         .WithOne("Address")
                         .HasForeignKey("FitnessManager.DataAccess.Entities.AddressEntity", "CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("FitnessManager.DataAccess.Entities.DepartmentEntity", "Department")
                         .WithOne("Address")
                         .HasForeignKey("FitnessManager.DataAccess.Entities.AddressEntity", "DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("FitnessManager.DataAccess.Entities.FitnessClubEntity", "FitnessClub")
                         .WithOne("BaseAddress")
                         .HasForeignKey("FitnessManager.DataAccess.Entities.AddressEntity", "FitnessClubId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("FitnessManager.DataAccess.Entities.UserEntity", "User")
                         .WithOne("Address")
                         .HasForeignKey("FitnessManager.DataAccess.Entities.AddressEntity", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Customer");
 
@@ -758,32 +764,27 @@ namespace FitnessManager.DataAccess.Migrations
                     b.HasOne("FitnessManager.DataAccess.Entities.CustomerEntity", "Customer")
                         .WithOne("Contact")
                         .HasForeignKey("FitnessManager.DataAccess.Entities.ContactEntity", "CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("FitnessManager.DataAccess.Entities.DepartmentEntity", "Department")
                         .WithOne("Contact")
                         .HasForeignKey("FitnessManager.DataAccess.Entities.ContactEntity", "DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("FitnessManager.DataAccess.Entities.FitnessClubEntity", "FitnessClub")
                         .WithOne("BaseContact")
                         .HasForeignKey("FitnessManager.DataAccess.Entities.ContactEntity", "FitnessClubId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("FitnessManager.DataAccess.Entities.InstructorEntity", "Instructor")
                         .WithOne("Contact")
                         .HasForeignKey("FitnessManager.DataAccess.Entities.ContactEntity", "InstructorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("FitnessManager.DataAccess.Entities.UserEntity", "User")
                         .WithOne("Contact")
                         .HasForeignKey("FitnessManager.DataAccess.Entities.ContactEntity", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Customer");
 
@@ -923,16 +924,16 @@ namespace FitnessManager.DataAccess.Migrations
                     b.Navigation("Hall");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.HasOne("FitnessManager.DataAccess.Entities.UserEntity", null)
                         .WithMany()
@@ -941,7 +942,7 @@ namespace FitnessManager.DataAccess.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.HasOne("FitnessManager.DataAccess.Entities.UserEntity", null)
                         .WithMany()
@@ -950,9 +951,9 @@ namespace FitnessManager.DataAccess.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -965,7 +966,7 @@ namespace FitnessManager.DataAccess.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.HasOne("FitnessManager.DataAccess.Entities.UserEntity", null)
                         .WithMany()

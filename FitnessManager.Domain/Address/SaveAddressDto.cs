@@ -1,4 +1,4 @@
-﻿namespace FitnessManager.Domain.Address.Dtos.In
+﻿namespace FitnessManager.Domain.Address
 {
     public class SaveAddressDto
     {

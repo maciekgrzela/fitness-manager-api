@@ -1,4 +1,4 @@
-﻿namespace FitnessManager.Domain.Contact.Dtos.In
+﻿namespace FitnessManager.Domain.Contact
 {
     public class SaveContactDto
     {

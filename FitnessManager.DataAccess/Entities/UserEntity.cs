@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace FitnessManager.DataAccess.Entities
 {
-    public class UserEntity : IdentityUser<Guid>
+    public class UserEntity : IdentityUser
     {
         [MaxLength(150)]
         public string FirstName { get; set; }

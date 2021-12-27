@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FitnessManager.DataAccess.Context;
 using FitnessManager.DataAccess.Entities;
@@ -9,29 +11,33 @@ namespace FitnessManager.DataAccess
 {
     public static class Seed
     {
-        public static async Task SeedDataAsync(DataContext context, UserManager<UserEntity> manager, IConfiguration configuration)
+        public static async Task SeedDataAsync(DataContext context, UserManager<UserEntity> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
         {
-            if (!manager.Users.Any())
+            if (!userManager.Users.Any())
             {
-                /*var usersId = Guid.NewGuid().ToString();
-                
-                var user = new User
+                var users = new List<UserEntity>
                 {
-                    Id = usersId,
-                    FirstName = "Maciek",
-                    LastName = "Grzela",
-                    UserName = usersId,
-                    Email = "maciekgrzela45@gmail.com",
-                    SelfDescription = "",
-                    LookingForAJob = true,
-                    Abilities = new List<Ability>(),
-                    Achievements = new List<Achievement>(),
-                    Projects = new List<Project>(),
-                    WorkExperiences = new List<WorkExperience>()
+                    new()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        FirstName = "Maciek",
+                        LastName = "Grzela",
+                        UserName = "maciekgrzela45@gmail.com",
+                        Email = "maciekgrzela45@gmail.com",
+                    }
                 };
 
-                await manager.CreateAsync(user, configuration.GetSection("DefaultUsersCredentials").Value);
-                await context.SaveChangesAsync();*/
+                if (!roleManager.Roles.Any())
+                {
+                    await roleManager.CreateAsync(new IdentityRole("Admin"));
+                    await roleManager.CreateAsync(new IdentityRole("RegularUser"));
+                }
+
+                foreach (var user in users)
+                {
+                    await userManager.CreateAsync(user, "zaq1@WSX");
+                    await userManager.AddToRolesAsync(user, new[] {"Admin"});
+                }
             }
         }
     }
