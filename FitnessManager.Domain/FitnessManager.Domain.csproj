@@ -12,4 +12,8 @@
       <ProjectReference Include="..\FitnessManager.DataAccess\FitnessManager.DataAccess.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Subscription" />
+    </ItemGroup>
+
 </Project>

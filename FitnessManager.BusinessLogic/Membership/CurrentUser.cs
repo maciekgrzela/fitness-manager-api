@@ -54,8 +54,8 @@ namespace FitnessManager.BusinessLogic.Membership
                     LastName = user.LastName,
                     Email = user.Email,
                     Role = userRoles[0],
-                    Address = _mapper.Map<AddressEntity, Address>(user.Address),
-                    Contact = _mapper.Map<ContactEntity, Contact>(user.Contact),
+                    Address = _mapper.Map<AddressEntity, Domain.Address.Address>(user.Address),
+                    Contact = _mapper.Map<ContactEntity, Domain.Contact.Contact>(user.Contact),
                     Token = _webTokenGenerator.CreateToken(user, userRoles[0])
                 });
             }
