@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using FitnessManager.BusinessLogic.Customer;
+using FitnessManager.BusinessLogic.Customer.Interfaces;
+using FitnessManager.DataAccess.Entities;
 using FitnessManager.Domain.Customer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,16 +11,23 @@ namespace FitnessManager.API.Controllers
 {
     public class CustomersController : BaseController
     {
+        private readonly ICustomerService _customerService;
+
+        public CustomersController(ICustomerService customerService)
+        {
+            _customerService = customerService;
+        }
+        
         /// <summary>
         /// Get list of customers
         /// </summary>
         /// <returns>List of CustomerDto</returns>
-        [ProducesResponseType(typeof(IEnumerable<Customer>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<CustomerDto>), StatusCodes.Status200OK)]
         [HttpGet]
         public async Task<IActionResult> GetAllAsync()
         {
-            var result = await Mediator.Send(new GetAll.Query());
-            return HandleResponse(result);
+            var customers = await _customerService.GetAllAsync();
+            return OkDto<IEnumerable<CustomerEntity>, IEnumerable<CustomerDto>>(customers);
         }
         
         /// <summary>
@@ -32,8 +40,8 @@ namespace FitnessManager.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAllAsync([FromQuery] Guid id)
         {
-            var result = await Mediator.Send(new Get.Query { Id = id });
-            return HandleResponse(result);
+            var customer = await _customerService.GetByIdAsync(id);
+            return HandleResponse<CustomerEntity, CustomerDto>(customer);
         }
         
         /// <summary>
@@ -44,10 +52,10 @@ namespace FitnessManager.API.Controllers
         [ProducesResponseType(typeof(void), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [HttpPost]
-        public async Task<IActionResult> SaveAsync([FromBody] Create.Command command)
+        public async Task<IActionResult> SaveAsync([FromBody] SaveCustomerDto saveCustomerDto)
         {
-            var result = await Mediator.Send(command);
-            return HandleResponse<Customer>(result);
+            var customerSaved = await _customerService.SaveAsync(saveCustomerDto);
+            return HandleResponse(customerSaved);
         }
         
         /// <summary>
@@ -56,14 +64,13 @@ namespace FitnessManager.API.Controllers
         /// <param name="body">UpdateCustomer.Command</param>
         /// <param name="id">CustomerId</param>
         /// <returns>Empty content</returns>
-        [ProducesResponseType(typeof(void), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync([FromQuery] Guid id, [FromBody] Update.Command command)
+        public async Task<IActionResult> UpdateAsync([FromQuery] Guid id, [FromBody] UpdateCustomerDto updateCustomerDto)
         {
-            command.SetId(id);
-            var result = await Mediator.Send(command);
-            return HandleResponse<Customer>(result);
+            var customerUpdated = await _customerService.UpdateAsync(id, updateCustomerDto);
+            return HandleResponse(customerUpdated);
         }
         
         /// <summary>
@@ -76,8 +83,8 @@ namespace FitnessManager.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync([FromQuery] Guid id)
         {
-            var result = await Mediator.Send(new Delete.Command { Id = id });
-            return HandleResponse<Customer>(result);
+            var customerDeleted = await _customerService.DeleteAsync(id);
+            return HandleResponse(customerDeleted);
         }
     }
 }

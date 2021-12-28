@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FitnessManager.BusinessLogic.Address;
+using FitnessManager.BusinessLogic.Address.Interfaces;
+using FitnessManager.DataAccess.Entities;
 using FitnessManager.Domain.Address;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +12,13 @@ namespace FitnessManager.API.Controllers
 {
     public class AddressesController : BaseController
     {
+        private readonly IAddressService _addressService;
+
+        public AddressesController(IAddressService addressService)
+        {
+            _addressService = addressService;
+        }
+        
         /// <summary>
         /// Get list of addresses
         /// </summary>
@@ -18,8 +27,8 @@ namespace FitnessManager.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllAsync()
         {
-            var result = await Mediator.Send(new GetAll.Query());
-            return HandleResponse<IEnumerable<Address>, IEnumerable<AddressDto>>(result);
+            var addresses = await _addressService.GetAllAsync();
+            return OkDto<IEnumerable<AddressEntity>, IEnumerable<AddressDto>>(addresses);
         }
         
         /// <summary>
@@ -31,8 +40,8 @@ namespace FitnessManager.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAllAsync([FromQuery] Guid id)
         {
-            var result = await Mediator.Send(new Get.Query { Id = id });
-            return HandleResponse<Address, AddressDto>(result);
+            var address = await _addressService.GetByIdAsync(id);
+            return HandleResponse<AddressEntity, AddressDto>(address);
         }
     }
 }

@@ -47,5 +47,13 @@ namespace FitnessManager.API.Controllers
                 _ => StatusCode((int) HttpStatusCode.InternalServerError)
             };
         }
+        
+        protected IActionResult OkDto<TEntity, TDto>(TEntity response)
+        {
+            var dto = _mapper.Map<TEntity, TDto>(response);
+            return Ok(dto);
+        }
+        
+        
     }
 }

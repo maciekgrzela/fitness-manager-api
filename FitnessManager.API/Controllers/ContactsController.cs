@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FitnessManager.BusinessLogic.Contact;
+using FitnessManager.BusinessLogic.Contact.Interfaces;
+using FitnessManager.DataAccess.Entities;
 using FitnessManager.Domain.Contact;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +12,13 @@ namespace FitnessManager.API.Controllers
 {
     public class ContactsController : BaseController
     {
+        private readonly IContactService _contactService;
+
+        public ContactsController(IContactService contactService)
+        {
+            _contactService = contactService;
+        }
+        
         /// <summary>
         /// Get list of contacts
         /// </summary>
@@ -18,8 +27,8 @@ namespace FitnessManager.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllAsync()
         {
-            var result = await Mediator.Send(new GetAll.Query());
-            return HandleResponse<IEnumerable<Contact>, IEnumerable<ContactDto>>(result);
+            var contacts = await _contactService.GetAllAsync();
+            return OkDto<IEnumerable<ContactEntity>, IEnumerable<ContactDto>>(contacts);
         }
         
         /// <summary>
@@ -31,8 +40,8 @@ namespace FitnessManager.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAllAsync([FromQuery] Guid id)
         {
-            var result = await Mediator.Send(new Get.Query { Id = id });
-            return HandleResponse<Contact, ContactDto>(result);
+            var contact = await _contactService.GetByIdAsync(id);
+            return HandleResponse<ContactEntity, ContactDto>(contact);
         }
     }
 }

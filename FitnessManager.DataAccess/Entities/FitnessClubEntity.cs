@@ -6,8 +6,6 @@ namespace FitnessManager.DataAccess.Entities
 {
     public class FitnessClubEntity : BaseEntity
     {
-        [Key]
-        public Guid Id { get; set; }
         public string Name { get; set; }
         public Guid BaseAddressId { get; set; }
         public virtual AddressEntity BaseAddress { get; set; }

@@ -9,7 +9,7 @@ namespace FitnessManager.DataAccess.Entities
         public Guid SubscriptionId { get; set; }
         public SubscriptionEntity Subscription { get; set; }
         public DateTime StartedAt { get; set; }
-        public DateTime EndedAt { get; set; }
+        public DateTime? EndedAt { get; set; }
         public string PaymentStatus { get; set; }
     }
 }
