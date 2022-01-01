@@ -21,7 +21,15 @@ namespace FitnessManager.BusinessLogic.Address
             _baseAddressRepository = baseAddressRepository;
             _unitOfWork = unitOfWork;
         }
-        
+
+        public IAddressService IAddressService
+        {
+            get => default;
+            set
+            {
+            }
+        }
+
         public async Task<IEnumerable<AddressEntity>> GetAllAsync()
         {
             return await _baseAddressRepository.GetAll()

@@ -13,6 +13,12 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="FitnessClass" />
+      <Folder Include="FitnessClub" />
+      <Folder Include="FitnessClubNetwork" />
+      <Folder Include="Hall" />
+      <Folder Include="Instructor" />
+      <Folder Include="SportsEquipment" />
       <Folder Include="Subscription" />
     </ItemGroup>
 

@@ -16,7 +16,7 @@ namespace FitnessManager.BusinessLogic.Membership
 {
     public class Login
     {
-         public class Query : IRequest<BusinessLogicResponse<User>>
+         public class Query : IRequest<BusinessLogicResponse<Domain.User.User>>
         {
             public string Email { get; set; }
             public string Password { get; set; }
@@ -31,7 +31,7 @@ namespace FitnessManager.BusinessLogic.Membership
             }
         }
         
-        public class Handler : IRequestHandler<Query, BusinessLogicResponse<User>>
+        public class Handler : IRequestHandler<Query, BusinessLogicResponse<Domain.User.User>>
         {
             private readonly SignInManager<UserEntity> _signInManager;
             private readonly UserManager<UserEntity> _userManager;
@@ -46,7 +46,7 @@ namespace FitnessManager.BusinessLogic.Membership
                 _mapper = mapper;
             }
             
-            public async Task<BusinessLogicResponse<User>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<BusinessLogicResponse<Domain.User.User>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var user = await _userManager.Users
                     .Include(p => p.Address)
@@ -56,7 +56,7 @@ namespace FitnessManager.BusinessLogic.Membership
 
                 if (user == null)
                 {
-                    return BusinessLogicResponse<User>.Failure(BusinessLogicResponseResult.ResourceDoesntExist,
+                    return BusinessLogicResponse<Domain.User.User>.Failure(BusinessLogicResponseResult.ResourceDoesntExist,
                         "User not found");
                 }
 
@@ -65,17 +65,17 @@ namespace FitnessManager.BusinessLogic.Membership
 
                 if (userRoles.Count == 0)
                 {
-                    return BusinessLogicResponse<User>.Failure(BusinessLogicResponseResult.UserIsNotAuthorized,
+                    return BusinessLogicResponse<Domain.User.User>.Failure(BusinessLogicResponseResult.UserIsNotAuthorized,
                         "User is not authorized");
                 }
 
                 if (!checkPassword.Succeeded)
                 {
-                    return BusinessLogicResponse<User>.Failure(BusinessLogicResponseResult.UserIsNotAuthorized,
+                    return BusinessLogicResponse<Domain.User.User>.Failure(BusinessLogicResponseResult.UserIsNotAuthorized,
                         "Incorrect user credentials");
                 }
 
-                var loggedUser = new User
+                var loggedUser = new Domain.User.User
                 {
                     Id = user.Id,
                     FirstName = user.FirstName,
@@ -87,7 +87,7 @@ namespace FitnessManager.BusinessLogic.Membership
                     Token = _webTokenGenerator.CreateToken(user, userRoles[0])
                 };
                 
-                return BusinessLogicResponse<User>.Success(BusinessLogicResponseResult.Ok, loggedUser);
+                return BusinessLogicResponse<Domain.User.User>.Success(BusinessLogicResponseResult.Ok, loggedUser);
             }
         }
     }

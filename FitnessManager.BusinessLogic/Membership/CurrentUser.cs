@@ -16,9 +16,9 @@ namespace FitnessManager.BusinessLogic.Membership
 {
     public class CurrentUser
     {
-        public class Query : IRequest<BusinessLogicResponse<User>> { }
+        public class Query : IRequest<BusinessLogicResponse<Domain.User.User>> { }
         
-        public class Handler : IRequestHandler<Query, BusinessLogicResponse<User>>
+        public class Handler : IRequestHandler<Query, BusinessLogicResponse<Domain.User.User>>
         {
             private readonly IMapper _mapper;
             private readonly IUserAccessor _userAccessor;
@@ -33,7 +33,7 @@ namespace FitnessManager.BusinessLogic.Membership
                 _webTokenGenerator = webTokenGenerator;
             }
             
-            public async Task<BusinessLogicResponse<User>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<BusinessLogicResponse<Domain.User.User>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var user = await _userManager.Users
                     .Include(p => p.Address)
@@ -42,12 +42,12 @@ namespace FitnessManager.BusinessLogic.Membership
 
                 if (user == null)
                 {
-                    return BusinessLogicResponse<User>.Failure(BusinessLogicResponseResult.ResourceDoesntExist, "User not found");
+                    return BusinessLogicResponse<Domain.User.User>.Failure(BusinessLogicResponseResult.ResourceDoesntExist, "User not found");
                 }
 
                 var userRoles = await _userManager.GetRolesAsync(user);
                 
-                return BusinessLogicResponse<User>.Success(BusinessLogicResponseResult.Ok, new User
+                return BusinessLogicResponse<Domain.User.User>.Success(BusinessLogicResponseResult.Ok, new Domain.User.User
                 {
                     Id = user.Id,
                     FirstName = user.FirstName,
