@@ -57,6 +57,21 @@ namespace FitnessManager.API.Controllers
             var entitySaved = await _fitnessClubService.SaveAsync(dto);
             return HandleResponse(entitySaved);
         }
+        
+        /// <summary>
+        /// Assign department to fitness club
+        /// </summary>
+        /// <param name="dto">AssignDepartmentToFitnessClubDto</param>
+        /// <param name="id">FitnessClubId</param>
+        /// <returns>NoContent</returns>
+        [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+        [HttpPost("{id}/department")]
+        public async Task<IActionResult> AssignDepartmentToFitnessClubAsync([FromQuery] Guid id, [FromBody] AssignDepartmentToFitnessClubDto dto)
+        {
+            var entitySaved = await _fitnessClubService.AssignDepartmentToFitnessClubAsync(id, dto);
+            return HandleResponse(entitySaved);
+        }
 
         /// <summary>
         /// Update entity

@@ -60,6 +60,21 @@ namespace FitnessManager.API.Controllers
         }
         
         /// <summary>
+        /// Create new fitness class enrolment
+        /// </summary>
+        /// <param name="dto">SaveFitnessClassDto</param>
+        /// <param name="id">FitnessClassId</param>
+        /// <returns>NoContent</returns>
+        [ProducesResponseType(typeof(void), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+        [HttpPost("{id}/enrolment")]
+        public async Task<IActionResult> SaveEnrolmentAsync([FromQuery] Guid id, [FromBody] SaveFitnessClassEnrolmentDto dto)
+        {
+            var enrolmentsSaved = await _fitnessClassService.SaveEnrolmentAsync(id, dto);
+            return HandleResponse(enrolmentsSaved);
+        }
+        
+        /// <summary>
         /// Update fitness club
         /// </summary>
         /// <param name="dto">UpdateFitnessClassDto</param>

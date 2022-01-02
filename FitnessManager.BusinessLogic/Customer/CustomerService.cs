@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using FitnessManager.BusinessLogic.Common;
@@ -21,6 +22,7 @@ namespace FitnessManager.BusinessLogic.Customer
         private readonly IBaseRepository<ContactEntity> _baseContactRepository;
         private readonly IBaseRepository<SubscriptionEntity> _baseSubscriptionRepository;
         private readonly IBaseRepository<CustomerFitnessClassEnrolmentEntity> _baseEnrolmentRepository;
+        private readonly IBaseRepository<FitnessClassEnrolmentsEntity> _fitnessClassEnrolmentRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
@@ -29,6 +31,7 @@ namespace FitnessManager.BusinessLogic.Customer
             IBaseRepository<ContactEntity> baseContactRepository, 
             IBaseRepository<SubscriptionEntity> baseSubscriptionRepository,
             IBaseRepository<CustomerFitnessClassEnrolmentEntity> baseEnrolmentRepository,
+            IBaseRepository<FitnessClassEnrolmentsEntity> fitnessClassEnrolmentRepository,
             IUnitOfWork unitOfWork,
             IMapper mapper)
         {
@@ -37,6 +40,7 @@ namespace FitnessManager.BusinessLogic.Customer
             _baseContactRepository = baseContactRepository;
             _baseSubscriptionRepository = baseSubscriptionRepository;
             _baseEnrolmentRepository = baseEnrolmentRepository;
+            _fitnessClassEnrolmentRepository = fitnessClassEnrolmentRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
@@ -142,6 +146,69 @@ namespace FitnessManager.BusinessLogic.Customer
             await _unitOfWork.CommitTransactionsAsync();
             
             return BusinessLogicResponse<CustomerEntity>.Success(BusinessLogicResponseResult.Created, customerSaved);
+        }
+
+        public async Task<BusinessLogicResponse<CustomerEntity>> EnrolCustomerToFitnessClassAsync(Guid customerId, Guid enrolmentId)
+        {
+            var existingCustomer = await _baseCustomerRepository.GetById(customerId).FirstOrDefaultAsync();
+
+            if (existingCustomer == null)
+            {
+                return BusinessLogicResponse<CustomerEntity>.Failure(BusinessLogicResponseResult.ResourceDoesntExist,
+                    "There is no customer for specified identifier");
+            }
+            
+            var existingEnrolment = await _fitnessClassEnrolmentRepository.GetById(enrolmentId).FirstOrDefaultAsync();
+
+            if (existingEnrolment == null)
+            {
+                return BusinessLogicResponse<CustomerEntity>.Failure(BusinessLogicResponseResult.ResourceDoesntExist,
+                    "There is no enrolment for specified identifier");
+            }
+
+            var customerEnrolment = new CustomerFitnessClassEnrolmentEntity
+            {
+                Customer = existingCustomer,
+                Enrolment = existingEnrolment
+            }; 
+            
+            await _baseEnrolmentRepository.Add(customerEnrolment);
+            await _unitOfWork.CommitTransactionsAsync();
+            
+            return BusinessLogicResponse<CustomerEntity>.Success(BusinessLogicResponseResult.Created);
+        }
+
+        public async Task<BusinessLogicResponse<CustomerEntity>> DeleteCustomerToFitnessClassEnrolmentAsync(Guid customerId, Guid enrolmentId)
+        {
+            var existingCustomer = await _baseCustomerRepository.GetById(customerId).FirstOrDefaultAsync();
+
+            if (existingCustomer == null)
+            {
+                return BusinessLogicResponse<CustomerEntity>.Failure(BusinessLogicResponseResult.ResourceDoesntExist,
+                    "There is no customer for specified identifier");
+            }
+            
+            var existingEnrolment = await _fitnessClassEnrolmentRepository.GetById(enrolmentId).FirstOrDefaultAsync();
+
+            if (existingEnrolment == null)
+            {
+                return BusinessLogicResponse<CustomerEntity>.Failure(BusinessLogicResponseResult.ResourceDoesntExist,
+                    "There is no enrolment for specified identifier");
+            }
+
+            var customerEnrolment = await _baseEnrolmentRepository.GetAll()
+                .Where(p => p.CustomerId == customerId && p.EnrolmentId == enrolmentId).FirstOrDefaultAsync();
+
+            if (customerEnrolment == null)
+            {
+                return BusinessLogicResponse<CustomerEntity>.Failure(BusinessLogicResponseResult.ResourceDoesntExist,
+                    "There is no enrolment for specified customer");
+            }
+
+            await _baseEnrolmentRepository.Delete(customerEnrolment);
+            await _unitOfWork.CommitTransactionsAsync();
+            
+            return BusinessLogicResponse<CustomerEntity>.Success(BusinessLogicResponseResult.Deleted);
         }
 
         public async Task<BusinessLogicResponse<CustomerEntity>> UpdateAsync(Guid id, UpdateCustomerDto dto)

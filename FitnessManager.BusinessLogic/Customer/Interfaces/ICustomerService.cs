@@ -12,6 +12,8 @@ namespace FitnessManager.BusinessLogic.Customer.Interfaces
         Task<IEnumerable<CustomerEntity>> GetAllAsync();
         Task<BusinessLogicResponse<CustomerEntity>> GetByIdAsync(Guid id);
         Task<BusinessLogicResponse<CustomerEntity>> SaveAsync(SaveCustomerDto dto);
+        Task<BusinessLogicResponse<CustomerEntity>> EnrolCustomerToFitnessClassAsync(Guid customerId, Guid enrolmentId);
+        Task<BusinessLogicResponse<CustomerEntity>> DeleteCustomerToFitnessClassEnrolmentAsync(Guid customerId, Guid enrolmentId);
         Task<BusinessLogicResponse<CustomerEntity>> UpdateAsync(Guid id, UpdateCustomerDto dto);
         Task<BusinessLogicResponse<CustomerEntity>> DeleteAsync(Guid id);
     }

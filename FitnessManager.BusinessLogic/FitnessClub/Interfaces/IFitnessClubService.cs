@@ -12,6 +12,9 @@ namespace FitnessManager.BusinessLogic.FitnessClub.Interfaces
         Task<IEnumerable<FitnessClubEntity>> GetAllAsync();
         Task<BusinessLogicResponse<FitnessClubEntity>> GetByIdAsync(Guid id);
         Task<BusinessLogicResponse<FitnessClubEntity>> SaveAsync(SaveFitnessClubDto dto);
+
+        Task<BusinessLogicResponse<DepartmentEntity>> AssignDepartmentToFitnessClubAsync(Guid id,
+            AssignDepartmentToFitnessClubDto dto);
         Task<BusinessLogicResponse<FitnessClubEntity>> UpdateAsync(Guid id, SaveFitnessClubDto dto);
         Task<BusinessLogicResponse<FitnessClubEntity>> DeleteAsync(Guid id);
     }

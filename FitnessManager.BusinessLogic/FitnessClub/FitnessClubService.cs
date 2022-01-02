@@ -7,6 +7,8 @@ using FitnessManager.BusinessLogic.Common.Interfaces;
 using FitnessManager.BusinessLogic.FitnessClub.Interfaces;
 using FitnessManager.DataAccess.Entities;
 using FitnessManager.DataAccess.Repositories.Interfaces;
+using FitnessManager.Domain.Address;
+using FitnessManager.Domain.Contact;
 using FitnessManager.Domain.FitnessClub;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,15 +20,17 @@ namespace FitnessManager.BusinessLogic.FitnessClub
         private readonly IBaseRepository<FitnessClubNetworkEntity> _fitnessClubNetworkRepository;
         private readonly IBaseRepository<AddressEntity> _addressRepository;
         private readonly IBaseRepository<ContactEntity> _contactRepository;
+        private readonly IBaseRepository<DepartmentEntity> _departmentRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public FitnessClubService(IBaseRepository<FitnessClubEntity> fitnessClubRepository, IBaseRepository<FitnessClubNetworkEntity> fitnessClubNetworkRepository, IBaseRepository<AddressEntity> addressRepository, IBaseRepository<ContactEntity> contactRepository, IUnitOfWork unitOfWork, IMapper mapper)
+        public FitnessClubService(IBaseRepository<FitnessClubEntity> fitnessClubRepository, IBaseRepository<FitnessClubNetworkEntity> fitnessClubNetworkRepository, IBaseRepository<AddressEntity> addressRepository, IBaseRepository<ContactEntity> contactRepository, IBaseRepository<DepartmentEntity> departmentRepository, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _fitnessClubRepository = fitnessClubRepository;
             _fitnessClubNetworkRepository = fitnessClubNetworkRepository;
             _addressRepository = addressRepository;
             _contactRepository = contactRepository;
+            _departmentRepository = departmentRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
@@ -101,6 +105,33 @@ namespace FitnessManager.BusinessLogic.FitnessClub
             await _unitOfWork.CommitTransactionsAsync();
             
             return BusinessLogicResponse<FitnessClubEntity>.Success(BusinessLogicResponseResult.Created);
+        }
+
+        public async Task<BusinessLogicResponse<DepartmentEntity>> AssignDepartmentToFitnessClubAsync(Guid id, AssignDepartmentToFitnessClubDto dto)
+        {
+            var existingFitnessClub = await _fitnessClubRepository.GetById(id).FirstOrDefaultAsync();
+
+            if (existingFitnessClub == null)
+            {
+                return BusinessLogicResponse<DepartmentEntity>.Failure(
+                    BusinessLogicResponseResult.ResourceDoesntExist, "FitnessClub with given id is not found");
+            }
+
+            var address = _mapper.Map<SaveAddressDto, AddressEntity>(dto.Address);
+            var contact = _mapper.Map<SaveContactDto, ContactEntity>(dto.Contact);
+
+            var department = new DepartmentEntity
+            {
+                Name = dto.Name,
+                Address = address,
+                Contact = contact,
+                FitnessClub = existingFitnessClub
+            };
+
+            await _departmentRepository.Add(department);
+            await _unitOfWork.CommitTransactionsAsync();
+            
+            return BusinessLogicResponse<DepartmentEntity>.Success(BusinessLogicResponseResult.Ok, department);
         }
 
         public async Task<BusinessLogicResponse<FitnessClubEntity>> UpdateAsync(Guid id, SaveFitnessClubDto dto)

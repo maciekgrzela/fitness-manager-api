@@ -47,29 +47,59 @@ namespace FitnessManager.API.Controllers
         /// <summary>
         /// Create new customer
         /// </summary>
-        /// <param name="body">CreateCustomer.Command</param>
+        /// <param name="dto">CreateCustomer.Command</param>
         /// <returns>Empty content</returns>
         [ProducesResponseType(typeof(void), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [HttpPost]
-        public async Task<IActionResult> SaveAsync([FromBody] SaveCustomerDto saveCustomerDto)
+        public async Task<IActionResult> SaveAsync([FromBody] SaveCustomerDto dto)
         {
-            var customerSaved = await _customerService.SaveAsync(saveCustomerDto);
+            var customerSaved = await _customerService.SaveAsync(dto);
             return HandleResponse(customerSaved);
+        }
+        
+        /// <summary>
+        /// Enrol customer to fitness classes
+        /// </summary>
+        /// <param name="id">CustomerId</param>
+        /// <param name="enrolmentId">EnrolmentId</param>
+        /// <returns>Empty content</returns>
+        [ProducesResponseType(typeof(void), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+        [HttpPost("{id}/enrolments/{enrolmentId}")]
+        public async Task<IActionResult> SaveCustomerToFitnessClassEnrolmentAsync(Guid id, Guid enrolmentId)
+        {
+            var customerToFitnessClassEnrolment = await _customerService.EnrolCustomerToFitnessClassAsync(id, enrolmentId);
+            return HandleResponse(customerToFitnessClassEnrolment);
+        }
+        
+        /// <summary>
+        /// Delete customer to fitness class enrolment
+        /// </summary>
+        /// <param name="id">CustomerId</param>
+        /// <param name="enrolmentId">EnrolmentId</param>
+        /// <returns>Empty content</returns>
+        [ProducesResponseType(typeof(void), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+        [HttpDelete("{id}/enrolments/{enrolmentId}")]
+        public async Task<IActionResult> DeleteCustomerToFitnessClassEnrolmentAsync(Guid id, Guid enrolmentId)
+        {
+            var customerToFitnessClassEnrolment = await _customerService.DeleteCustomerToFitnessClassEnrolmentAsync(id, enrolmentId);
+            return HandleResponse(customerToFitnessClassEnrolment);
         }
         
         /// <summary>
         /// Update customer
         /// </summary>
-        /// <param name="body">UpdateCustomer.Command</param>
+        /// <param name="dto">UpdateCustomer.Command</param>
         /// <param name="id">CustomerId</param>
         /// <returns>Empty content</returns>
         [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync([FromQuery] Guid id, [FromBody] UpdateCustomerDto updateCustomerDto)
+        public async Task<IActionResult> UpdateAsync([FromQuery] Guid id, [FromBody] UpdateCustomerDto dto)
         {
-            var customerUpdated = await _customerService.UpdateAsync(id, updateCustomerDto);
+            var customerUpdated = await _customerService.UpdateAsync(id, dto);
             return HandleResponse(customerUpdated);
         }
         
