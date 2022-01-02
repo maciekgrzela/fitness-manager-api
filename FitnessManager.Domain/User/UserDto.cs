@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using FitnessManager.DataAccess.Entities;
+using FitnessManager.Domain.Address;
+using FitnessManager.Domain.Contact;
 
 namespace FitnessManager.Domain.User
 {
@@ -10,8 +12,8 @@ namespace FitnessManager.Domain.User
         public string LastName { get; set; }
         public string Email { get; set; }
         public string Role { get; set; }
-        public Address.Address Address { get; set; }
-        public Contact.Contact Contact { get; set; }
+        public AddressDto Address { get; set; }
+        public ContactDto Contact { get; set; }
         public string Token { get; set; }
     }
 

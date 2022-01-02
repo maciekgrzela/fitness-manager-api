@@ -12,6 +12,6 @@ namespace FitnessManager.Domain.Customer
         public SaveAddressDto Address { get; set; }
         public SaveContactDto Contact { get; set; }
         public ICollection<Guid> ActiveSubscriptions { get; set; }
-        public virtual ICollection<Guid> Enrolments { get; set; }
+        public  ICollection<Guid> Enrolments { get; set; }
     }
 }

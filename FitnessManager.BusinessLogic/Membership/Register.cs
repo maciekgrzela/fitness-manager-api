@@ -83,8 +83,8 @@ namespace FitnessManager.BusinessLogic.Membership
                         "You don't have sufficient priviledges to create Admin's account");
                 }
 
-                var address = _mapper.Map<SaveAddressDto, Domain.Address.Address>(request.Address);
-                var contact = _mapper.Map<SaveContactDto, Domain.Contact.Contact>(request.Contact);
+                var address = _mapper.Map<SaveAddressDto, AddressDto>(request.Address);
+                var contact = _mapper.Map<SaveContactDto, ContactDto>(request.Contact);
                 
                 address.Id = Guid.NewGuid();
                 contact.Id = Guid.NewGuid();
@@ -97,9 +97,9 @@ namespace FitnessManager.BusinessLogic.Membership
                     UserName = request.Email,
                     Email = request.Email,
                     Role = request.Role,
-                    Address = _mapper.Map<Domain.Address.Address, AddressEntity>(address),
+                    Address = _mapper.Map<AddressDto, AddressEntity>(address),
                     AddressId = address.Id,
-                    Contact = _mapper.Map<Domain.Contact.Contact, ContactEntity>(contact),
+                    Contact = _mapper.Map<ContactDto, ContactEntity>(contact),
                     ContactId = contact.Id
                 };
 

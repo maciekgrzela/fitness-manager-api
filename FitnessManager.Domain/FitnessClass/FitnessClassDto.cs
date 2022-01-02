@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using AutoMapper;
+using FitnessManager.DataAccess.Entities;
 
 namespace FitnessManager.Domain.FitnessClass
 {
@@ -9,8 +11,17 @@ namespace FitnessManager.Domain.FitnessClass
         public string Type { get; set; }
         public double Price { get; set; }
         public int MaximumParticipants { get; set; }
-        public Guid? DefaultInstructorId { get; set; }
-        public virtual InstructorForFitnessClassDto DefaultInstructor { get; set; }
-        public virtual ICollection<FitnessClassEnrolmentsForFitnessClassDto> Enrolments { get; set; }
+        public  InstructorForFitnessClassDto DefaultInstructor { get; set; }
+        public  ICollection<FitnessClassEnrolmentsForFitnessClassDto> Enrolments { get; set; }
+    }
+
+    public class FitnessClubMapping : Profile
+    {
+        public FitnessClubMapping()
+        {
+            CreateMap<FitnessClassEntity, FitnessClassDto>();
+            CreateMap<InstructorEntity, InstructorForFitnessClassDto>();
+            CreateMap<FitnessClassEnrolmentsEntity, FitnessClassEnrolmentsForFitnessClassDto>();
+        }
     }
 }

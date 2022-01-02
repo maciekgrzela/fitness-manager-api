@@ -6,6 +6,6 @@ namespace FitnessManager.Domain.FitnessClass
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public virtual ContactEntity Contact { get; set; }
+        public  ContactEntity Contact { get; set; }
     }
 }

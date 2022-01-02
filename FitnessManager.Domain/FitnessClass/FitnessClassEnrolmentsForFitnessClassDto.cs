@@ -8,7 +8,7 @@ namespace FitnessManager.Domain.FitnessClass
     {
         public DateTime From { get; set; }
         public DateTime To { get; set; }
-        public virtual InstructorEntity Instructor { get; set; }
-        public virtual ICollection<CustomerForFitnessClassDto> Customers { get; set; }
+        public  InstructorEntity Instructor { get; set; }
+        public  ICollection<CustomerForFitnessClassDto> Customers { get; set; }
     }
 }

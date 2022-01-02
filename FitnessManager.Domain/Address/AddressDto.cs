@@ -1,4 +1,6 @@
 ﻿using System;
+using AutoMapper;
+using FitnessManager.DataAccess.Entities;
 
 namespace FitnessManager.Domain.Address
 {
@@ -10,5 +12,15 @@ namespace FitnessManager.Domain.Address
         public string Country { get; set; }
         public string City { get; set; }
         public string PostalCode { get; set; }
+    }
+    
+    public class AddressProfile : Profile
+    {
+        public AddressProfile()
+        {
+            CreateMap<SaveAddressDto, AddressDto>();
+            CreateMap<AddressEntity, AddressDto>();
+            CreateMap<AddressDto, AddressEntity>();
+        }
     }
 }

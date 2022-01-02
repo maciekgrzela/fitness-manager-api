@@ -22,12 +22,12 @@ namespace FitnessManager.API.Controllers
         /// Get list of customers
         /// </summary>
         /// <returns>List of CustomerDto</returns>
-        [ProducesResponseType(typeof(IEnumerable<CustomerDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<Customer>), StatusCodes.Status200OK)]
         [HttpGet]
         public async Task<IActionResult> GetAllAsync()
         {
             var customers = await _customerService.GetAllAsync();
-            return OkDto<IEnumerable<CustomerEntity>, IEnumerable<CustomerDto>>(customers);
+            return OkDto<IEnumerable<CustomerEntity>, IEnumerable<Customer>>(customers);
         }
         
         /// <summary>
@@ -41,7 +41,7 @@ namespace FitnessManager.API.Controllers
         public async Task<IActionResult> GetAllAsync([FromQuery] Guid id)
         {
             var customer = await _customerService.GetByIdAsync(id);
-            return HandleResponse<CustomerEntity, CustomerDto>(customer);
+            return HandleResponse<CustomerEntity, Customer>(customer);
         }
         
         /// <summary>

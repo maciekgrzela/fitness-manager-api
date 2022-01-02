@@ -7,6 +7,6 @@ namespace FitnessManager.Domain.Instructor
     {
         public DateTime From { get; set; }
         public DateTime To { get; set; }
-        public virtual ICollection<CustomersForInstructorDto> Customers { get; set; }
+        public  ICollection<CustomersForInstructorDto> Customers { get; set; }
     }
 }

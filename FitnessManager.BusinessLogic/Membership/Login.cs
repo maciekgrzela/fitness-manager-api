@@ -5,6 +5,8 @@ using AutoMapper;
 using FitnessManager.BusinessLogic.Common;
 using FitnessManager.BusinessLogic.Common.Interfaces;
 using FitnessManager.DataAccess.Entities;
+using FitnessManager.Domain.Address;
+using FitnessManager.Domain.Contact;
 using FitnessManager.Domain.User;
 using FluentValidation;
 using MediatR;
@@ -81,8 +83,8 @@ namespace FitnessManager.BusinessLogic.Membership
                     LastName = user.LastName,
                     Email = user.Email,
                     Role = userRoles[0],
-                    Address = _mapper.Map<AddressEntity, Domain.Address.Address>(user.Address),
-                    Contact = _mapper.Map<ContactEntity, Domain.Contact.Contact>(user.Contact),
+                    Address = _mapper.Map<AddressEntity, AddressDto>(user.Address),
+                    Contact = _mapper.Map<ContactEntity, ContactDto>(user.Contact),
                     Token = _webTokenGenerator.CreateToken(user, userRoles[0])
                 };
                 

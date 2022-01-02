@@ -6,7 +6,7 @@ namespace FitnessManager.Domain.Hall
     public class FitnessClubForHallDto
     {
         public string Name { get; set; }
-        public virtual AddressDto BaseAddress { get; set; }
-        public virtual ContactDto BaseContact { get; set; }
+        public  AddressDto BaseAddress { get; set; }
+        public  ContactDto BaseContact { get; set; }
     }
 }
