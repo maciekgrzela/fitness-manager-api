@@ -23,7 +23,7 @@ namespace FitnessManager.API.Controllers
         public async Task<IActionResult> LoginUserAsync([FromBody] Login.Query query)
         {
             var result = await Mediator.Send(query);
-            return HandleResponse<User, LoggedUserDto>(result);
+            return HandleResponse<UserDto, LoggedUserDto>(result);
         }
         
         /// <summary>
@@ -40,7 +40,7 @@ namespace FitnessManager.API.Controllers
         public async Task<IActionResult> RegisterUserAsync([FromBody] Register.Query query)
         {
             var result = await Mediator.Send(query);
-            return HandleResponse<User, LoggedUserDto>(result);
+            return HandleResponse<UserDto, LoggedUserDto>(result);
         }
         
         /// <summary>
@@ -56,7 +56,7 @@ namespace FitnessManager.API.Controllers
         public async Task<IActionResult> GetCurrentUserAsync()
         {
             var result = await Mediator.Send(new CurrentUser.Query());
-            return HandleResponse<User, LoggedUserDto>(result);
+            return HandleResponse<UserDto, LoggedUserDto>(result);
         }
     }
 }

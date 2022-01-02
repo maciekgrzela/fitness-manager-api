@@ -1,10 +1,34 @@
 using System;
 using System.Threading.Tasks;
+using FitnessManager.BusinessLogic.Address;
+using FitnessManager.BusinessLogic.Address.Interfaces;
 using FitnessManager.BusinessLogic.Common;
 using FitnessManager.BusinessLogic.Common.Interfaces;
+using FitnessManager.BusinessLogic.Contact;
+using FitnessManager.BusinessLogic.Contact.Interfaces;
+using FitnessManager.BusinessLogic.Customer;
+using FitnessManager.BusinessLogic.Customer.Interfaces;
+using FitnessManager.BusinessLogic.FitnessClass;
+using FitnessManager.BusinessLogic.FitnessClass.Interfaces;
+using FitnessManager.BusinessLogic.FitnessClub;
+using FitnessManager.BusinessLogic.FitnessClub.Interfaces;
+using FitnessManager.BusinessLogic.FitnessClubNetwork;
+using FitnessManager.BusinessLogic.FitnessClubNetwork.Interfaces;
+using FitnessManager.BusinessLogic.Hall;
+using FitnessManager.BusinessLogic.Hall.Interfaces;
+using FitnessManager.BusinessLogic.Instructor;
+using FitnessManager.BusinessLogic.Instructor.Interfaces;
 using FitnessManager.BusinessLogic.Membership;
+using FitnessManager.BusinessLogic.SportsEquipment;
+using FitnessManager.BusinessLogic.SportsEquipment.Interfaces;
+using FitnessManager.BusinessLogic.Subscription;
+using FitnessManager.BusinessLogic.Subscription.Interfaces;
+using FitnessManager.BusinessLogic.User;
+using FitnessManager.BusinessLogic.User.Interfaces;
 using FitnessManager.DataAccess.Context;
 using FitnessManager.DataAccess.Entities;
+using FitnessManager.DataAccess.Repositories;
+using FitnessManager.DataAccess.Repositories.Interfaces;
 using FitnessManager.Domain.User;
 using FitnessManager.Infrastructure.Accessors;
 using FitnessManager.Infrastructure.Security;
@@ -140,8 +164,20 @@ namespace FitnessManager.API
             services.AddScoped<IUserAccessor, UserAccessor>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IWebTokenGenerator, WebTokenGenerator>();
+            services.AddScoped<IAddressService, AddressService>();
+            services.AddScoped<IContactService, ContactService>();
+            services.AddScoped<ICustomerService, CustomerService>();
+            services.AddScoped<IFitnessClassService, FitnessClassService>();
+            services.AddScoped<IFitnessClubService, FitnessClubService>();
+            services.AddScoped<IFitnessClubNetworkService, FitnessClubNetworkService>();
+            services.AddScoped<IHallService, HallService>();
+            services.AddScoped<IInstructorService, InstructorService>();
+            services.AddScoped<ISportsEquipmentService, SportsEquipmentService>();
+            services.AddScoped<ISubscriptionService, SubscriptionService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
             services.AddMediatR(typeof(Login.Handler).Assembly);
-            services.AddAutoMapper(typeof(BaseEntity).Assembly, typeof(User).Assembly);
+            services.AddAutoMapper(typeof(BaseEntity).Assembly, typeof(UserDto).Assembly);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

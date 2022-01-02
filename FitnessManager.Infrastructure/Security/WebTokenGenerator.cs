@@ -5,7 +5,6 @@ using System.Security.Claims;
 using FitnessManager.BusinessLogic.Common.Interfaces;
 using FitnessManager.DataAccess.Entities;
 using Microsoft.IdentityModel.Tokens;
-using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
 namespace FitnessManager.Infrastructure.Security
 {

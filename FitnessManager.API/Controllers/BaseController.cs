@@ -25,7 +25,7 @@ namespace FitnessManager.API.Controllers
                 BusinessLogicResponseResult.ResourceDoesntExist => NotFound(response.ErrorMessage),
                 BusinessLogicResponseResult.ConflictOccured => Conflict(response.ErrorMessage),
                 BusinessLogicResponseResult.Ok => Ok(response.Value),
-                BusinessLogicResponseResult.Created => NoContent(),
+                BusinessLogicResponseResult.Created => StatusCode((int) HttpStatusCode.Created),
                 BusinessLogicResponseResult.Deleted => NoContent(),
                 BusinessLogicResponseResult.Updated => NoContent(),
                 _ => StatusCode((int) HttpStatusCode.InternalServerError)
@@ -41,11 +41,19 @@ namespace FitnessManager.API.Controllers
                 BusinessLogicResponseResult.ResourceDoesntExist => NotFound(response.ErrorMessage),
                 BusinessLogicResponseResult.ConflictOccured => Conflict(response.ErrorMessage),
                 BusinessLogicResponseResult.Ok => Ok(Mapper.Map<TEntity, TDto>(response.Value)),
-                BusinessLogicResponseResult.Created => NoContent(),
+                BusinessLogicResponseResult.Created => StatusCode((int) HttpStatusCode.Created),
                 BusinessLogicResponseResult.Deleted => NoContent(),
                 BusinessLogicResponseResult.Updated => NoContent(),
                 _ => StatusCode((int) HttpStatusCode.InternalServerError)
             };
         }
+        
+        protected IActionResult OkDto<TEntity, TDto>(TEntity response)
+        {
+            var dto = _mapper.Map<TEntity, TDto>(response);
+            return Ok(dto);
+        }
+        
+        
     }
 }

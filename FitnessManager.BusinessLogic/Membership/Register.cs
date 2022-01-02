@@ -21,7 +21,7 @@ namespace FitnessManager.BusinessLogic.Membership
 {
     public class Register
     {
-        public class Query : IRequest<BusinessLogicResponse<User>>
+        public class Query : IRequest<BusinessLogicResponse<UserDto>>
         {
             public string FirstName { get; set; }
             public string LastName { get; set; }
@@ -44,7 +44,7 @@ namespace FitnessManager.BusinessLogic.Membership
             }
         }
         
-        public class Handler : IRequestHandler<Query, BusinessLogicResponse<User>>
+        public class Handler : IRequestHandler<Query, BusinessLogicResponse<UserDto>>
         {
             private readonly UserManager<UserEntity> _userManager;
             private readonly RoleManager<IdentityRole> _roleManager;
@@ -64,13 +64,13 @@ namespace FitnessManager.BusinessLogic.Membership
             }
             
             
-            public async Task<BusinessLogicResponse<User>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<BusinessLogicResponse<UserDto>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var existingEmail = await _userManager.Users.Where(p => p.Email == request.Email).ToListAsync(cancellationToken: cancellationToken);
 
                 if (existingEmail.Count > 0)
                 {
-                    return BusinessLogicResponse<User>.Failure(BusinessLogicResponseResult.UserIsNotAuthorized,
+                    return BusinessLogicResponse<UserDto>.Failure(BusinessLogicResponseResult.UserIsNotAuthorized,
                         "User with this e-mail already exists");
                 }
 
@@ -79,12 +79,12 @@ namespace FitnessManager.BusinessLogic.Membership
 
                 if (userRole == EUserRole.RegularUser && requestedRole == EUserRole.Admin)
                 {
-                    return BusinessLogicResponse<User>.Failure(BusinessLogicResponseResult.AccessDenied,
+                    return BusinessLogicResponse<UserDto>.Failure(BusinessLogicResponseResult.AccessDenied,
                         "You don't have sufficient priviledges to create Admin's account");
                 }
 
-                var address = _mapper.Map<SaveAddressDto, Address>(request.Address);
-                var contact = _mapper.Map<SaveContactDto, Contact>(request.Contact);
+                var address = _mapper.Map<SaveAddressDto, AddressDto>(request.Address);
+                var contact = _mapper.Map<SaveContactDto, ContactDto>(request.Contact);
                 
                 address.Id = Guid.NewGuid();
                 contact.Id = Guid.NewGuid();
@@ -97,9 +97,9 @@ namespace FitnessManager.BusinessLogic.Membership
                     UserName = request.Email,
                     Email = request.Email,
                     Role = request.Role,
-                    Address = _mapper.Map<Address, AddressEntity>(address),
+                    Address = _mapper.Map<AddressDto, AddressEntity>(address),
                     AddressId = address.Id,
-                    Contact = _mapper.Map<Contact, ContactEntity>(contact),
+                    Contact = _mapper.Map<ContactDto, ContactEntity>(contact),
                     ContactId = contact.Id
                 };
 
@@ -107,7 +107,7 @@ namespace FitnessManager.BusinessLogic.Membership
 
                 if (!result.Succeeded)
                 {
-                    return BusinessLogicResponse<User>.Failure(BusinessLogicResponseResult.ConflictOccured,
+                    return BusinessLogicResponse<UserDto>.Failure(BusinessLogicResponseResult.ConflictOccured,
                         "Unable to create new user's account");
                 }
 
@@ -116,10 +116,10 @@ namespace FitnessManager.BusinessLogic.Membership
 
                 await _unitOfWork.CommitTransactionsAsync();
 
-                var loggedUser = _mapper.Map<UserEntity, User>(user);
+                var loggedUser = _mapper.Map<UserEntity, UserDto>(user);
                 loggedUser.Token = _webTokenGenerator.CreateToken(user, request.Role);
 
-                return BusinessLogicResponse<User>.Success(BusinessLogicResponseResult.Ok, loggedUser);
+                return BusinessLogicResponse<UserDto>.Success(BusinessLogicResponseResult.Ok, loggedUser);
             }
         }
     }

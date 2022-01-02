@@ -17,7 +17,7 @@ namespace FitnessManager.BusinessLogic.Membership
 {
     public class Login
     {
-         public class Query : IRequest<BusinessLogicResponse<User>>
+         public class Query : IRequest<BusinessLogicResponse<UserDto>>
         {
             public string Email { get; set; }
             public string Password { get; set; }
@@ -32,7 +32,7 @@ namespace FitnessManager.BusinessLogic.Membership
             }
         }
         
-        public class Handler : IRequestHandler<Query, BusinessLogicResponse<User>>
+        public class Handler : IRequestHandler<Query, BusinessLogicResponse<UserDto>>
         {
             private readonly SignInManager<UserEntity> _signInManager;
             private readonly UserManager<UserEntity> _userManager;
@@ -47,7 +47,7 @@ namespace FitnessManager.BusinessLogic.Membership
                 _mapper = mapper;
             }
             
-            public async Task<BusinessLogicResponse<User>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<BusinessLogicResponse<UserDto>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var user = await _userManager.Users
                     .Include(p => p.Address)
@@ -57,7 +57,7 @@ namespace FitnessManager.BusinessLogic.Membership
 
                 if (user == null)
                 {
-                    return BusinessLogicResponse<User>.Failure(BusinessLogicResponseResult.ResourceDoesntExist,
+                    return BusinessLogicResponse<UserDto>.Failure(BusinessLogicResponseResult.ResourceDoesntExist,
                         "User not found");
                 }
 
@@ -66,29 +66,29 @@ namespace FitnessManager.BusinessLogic.Membership
 
                 if (userRoles.Count == 0)
                 {
-                    return BusinessLogicResponse<User>.Failure(BusinessLogicResponseResult.UserIsNotAuthorized,
+                    return BusinessLogicResponse<UserDto>.Failure(BusinessLogicResponseResult.UserIsNotAuthorized,
                         "User is not authorized");
                 }
 
                 if (!checkPassword.Succeeded)
                 {
-                    return BusinessLogicResponse<User>.Failure(BusinessLogicResponseResult.UserIsNotAuthorized,
+                    return BusinessLogicResponse<UserDto>.Failure(BusinessLogicResponseResult.UserIsNotAuthorized,
                         "Incorrect user credentials");
                 }
 
-                var loggedUser = new User
+                var loggedUser = new UserDto
                 {
                     Id = user.Id,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     Email = user.Email,
                     Role = userRoles[0],
-                    Address = _mapper.Map<AddressEntity, Address>(user.Address),
-                    Contact = _mapper.Map<ContactEntity, Contact>(user.Contact),
+                    Address = _mapper.Map<AddressEntity, AddressDto>(user.Address),
+                    Contact = _mapper.Map<ContactEntity, ContactDto>(user.Contact),
                     Token = _webTokenGenerator.CreateToken(user, userRoles[0])
                 };
                 
-                return BusinessLogicResponse<User>.Success(BusinessLogicResponseResult.Ok, loggedUser);
+                return BusinessLogicResponse<UserDto>.Success(BusinessLogicResponseResult.Ok, loggedUser);
             }
         }
     }
