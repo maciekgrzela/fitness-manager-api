@@ -1,12 +1,9 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using FitnessManager.BusinessLogic.Common;
 using FitnessManager.BusinessLogic.Common.Interfaces;
 using FitnessManager.DataAccess.Entities;
-using FitnessManager.Domain.Address;
-using FitnessManager.Domain.Contact;
 using FitnessManager.Domain.User;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -16,9 +13,9 @@ namespace FitnessManager.BusinessLogic.Membership
 {
     public class CurrentUser
     {
-        public class Query : IRequest<BusinessLogicResponse<Domain.User.User>> { }
+        public class Query : IRequest<BusinessLogicResponse<Domain.User.UserDto>> { }
         
-        public class Handler : IRequestHandler<Query, BusinessLogicResponse<Domain.User.User>>
+        public class Handler : IRequestHandler<Query, BusinessLogicResponse<Domain.User.UserDto>>
         {
             private readonly IMapper _mapper;
             private readonly IUserAccessor _userAccessor;
@@ -33,7 +30,7 @@ namespace FitnessManager.BusinessLogic.Membership
                 _webTokenGenerator = webTokenGenerator;
             }
             
-            public async Task<BusinessLogicResponse<Domain.User.User>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<BusinessLogicResponse<Domain.User.UserDto>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var user = await _userManager.Users
                     .Include(p => p.Address)
@@ -42,12 +39,12 @@ namespace FitnessManager.BusinessLogic.Membership
 
                 if (user == null)
                 {
-                    return BusinessLogicResponse<Domain.User.User>.Failure(BusinessLogicResponseResult.ResourceDoesntExist, "User not found");
+                    return BusinessLogicResponse<Domain.User.UserDto>.Failure(BusinessLogicResponseResult.ResourceDoesntExist, "User not found");
                 }
 
                 var userRoles = await _userManager.GetRolesAsync(user);
                 
-                return BusinessLogicResponse<Domain.User.User>.Success(BusinessLogicResponseResult.Ok, new Domain.User.User
+                return BusinessLogicResponse<UserDto>.Success(BusinessLogicResponseResult.Ok, new Domain.User.UserDto
                 {
                     Id = user.Id,
                     FirstName = user.FirstName,

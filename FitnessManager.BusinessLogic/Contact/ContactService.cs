@@ -31,7 +31,7 @@ namespace FitnessManager.BusinessLogic.Contact
 
         public async Task<BusinessLogicResponse<ContactEntity>> GetByIdAsync(Guid id)
         {
-            var contact = await _baseContactRepository.GetById(id);
+            var contact = await _baseContactRepository.GetById(id).FirstOrDefaultAsync();
 
             if (contact == null)
             {

@@ -54,7 +54,7 @@ namespace FitnessManager.BusinessLogic.Customer
 
         public async Task<BusinessLogicResponse<CustomerEntity>> GetByIdAsync(Guid id)
         {
-            var customer = await _baseCustomerRepository.GetById(id);
+            var customer = await _baseCustomerRepository.GetById(id).FirstOrDefaultAsync();
 
             if (customer == null)
             {
@@ -96,7 +96,7 @@ namespace FitnessManager.BusinessLogic.Customer
 
             foreach (var subscriptionId in dto.ActiveSubscriptions)
             {
-                var existingSubscription = await _baseSubscriptionRepository.GetById(subscriptionId);
+                var existingSubscription = await _baseSubscriptionRepository.GetById(subscriptionId).FirstOrDefaultAsync();
 
                 if (existingSubscription == null)
                 {
@@ -119,7 +119,7 @@ namespace FitnessManager.BusinessLogic.Customer
 
             foreach (var enrolmentId in dto.Enrolments)
             {
-                var existingEnrolment = await _baseEnrolmentRepository.GetById(enrolmentId);
+                var existingEnrolment = await _baseEnrolmentRepository.GetById(enrolmentId).FirstOrDefaultAsync();
 
                 if (existingEnrolment == null)
                 {
@@ -146,7 +146,7 @@ namespace FitnessManager.BusinessLogic.Customer
 
         public async Task<BusinessLogicResponse<CustomerEntity>> UpdateAsync(Guid id, UpdateCustomerDto dto)
         {
-            var existingCustomer = await _baseCustomerRepository.GetById(id);
+            var existingCustomer = await _baseCustomerRepository.GetById(id).FirstOrDefaultAsync();
 
             if (existingCustomer == null)
             {
@@ -197,7 +197,7 @@ namespace FitnessManager.BusinessLogic.Customer
 
         public async Task<BusinessLogicResponse<CustomerEntity>> DeleteAsync(Guid id)
         {
-            var existingCustomer = await _baseCustomerRepository.GetById(id);
+            var existingCustomer = await _baseCustomerRepository.GetById(id).FirstOrDefaultAsync();
 
             if (existingCustomer == null)
             {

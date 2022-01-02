@@ -21,7 +21,7 @@ namespace FitnessManager.BusinessLogic.Membership
 {
     public class Register
     {
-        public class Query : IRequest<BusinessLogicResponse<Domain.User.User>>
+        public class Query : IRequest<BusinessLogicResponse<UserDto>>
         {
             public string FirstName { get; set; }
             public string LastName { get; set; }
@@ -44,7 +44,7 @@ namespace FitnessManager.BusinessLogic.Membership
             }
         }
         
-        public class Handler : IRequestHandler<Query, BusinessLogicResponse<Domain.User.User>>
+        public class Handler : IRequestHandler<Query, BusinessLogicResponse<UserDto>>
         {
             private readonly UserManager<UserEntity> _userManager;
             private readonly RoleManager<IdentityRole> _roleManager;
@@ -64,13 +64,13 @@ namespace FitnessManager.BusinessLogic.Membership
             }
             
             
-            public async Task<BusinessLogicResponse<Domain.User.User>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<BusinessLogicResponse<UserDto>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var existingEmail = await _userManager.Users.Where(p => p.Email == request.Email).ToListAsync(cancellationToken: cancellationToken);
 
                 if (existingEmail.Count > 0)
                 {
-                    return BusinessLogicResponse<Domain.User.User>.Failure(BusinessLogicResponseResult.UserIsNotAuthorized,
+                    return BusinessLogicResponse<UserDto>.Failure(BusinessLogicResponseResult.UserIsNotAuthorized,
                         "User with this e-mail already exists");
                 }
 
@@ -79,7 +79,7 @@ namespace FitnessManager.BusinessLogic.Membership
 
                 if (userRole == EUserRole.RegularUser && requestedRole == EUserRole.Admin)
                 {
-                    return BusinessLogicResponse<Domain.User.User>.Failure(BusinessLogicResponseResult.AccessDenied,
+                    return BusinessLogicResponse<UserDto>.Failure(BusinessLogicResponseResult.AccessDenied,
                         "You don't have sufficient priviledges to create Admin's account");
                 }
 
@@ -107,7 +107,7 @@ namespace FitnessManager.BusinessLogic.Membership
 
                 if (!result.Succeeded)
                 {
-                    return BusinessLogicResponse<Domain.User.User>.Failure(BusinessLogicResponseResult.ConflictOccured,
+                    return BusinessLogicResponse<UserDto>.Failure(BusinessLogicResponseResult.ConflictOccured,
                         "Unable to create new user's account");
                 }
 
@@ -116,10 +116,10 @@ namespace FitnessManager.BusinessLogic.Membership
 
                 await _unitOfWork.CommitTransactionsAsync();
 
-                var loggedUser = _mapper.Map<UserEntity, Domain.User.User>(user);
+                var loggedUser = _mapper.Map<UserEntity, UserDto>(user);
                 loggedUser.Token = _webTokenGenerator.CreateToken(user, request.Role);
 
-                return BusinessLogicResponse<Domain.User.User>.Success(BusinessLogicResponseResult.Ok, loggedUser);
+                return BusinessLogicResponse<UserDto>.Success(BusinessLogicResponseResult.Ok, loggedUser);
             }
         }
     }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using FitnessManager.BusinessLogic.Address;
 using FitnessManager.BusinessLogic.Address.Interfaces;
 using FitnessManager.DataAccess.Entities;
 using FitnessManager.Domain.Address;

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using FitnessManager.DataAccess.Entities;
 using FitnessManager.Domain.Address;
 using FitnessManager.Domain.Contact;
 

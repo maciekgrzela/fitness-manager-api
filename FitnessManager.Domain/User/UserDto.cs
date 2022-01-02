@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
 using FitnessManager.DataAccess.Entities;
-using FitnessManager.Domain.Address;
-using FitnessManager.Domain.Contact;
 
 namespace FitnessManager.Domain.User
 {
-    public class User
+    public class UserDto
     {
         public string Id { get; set; }
         public string FirstName { get; set; }
@@ -21,8 +19,8 @@ namespace FitnessManager.Domain.User
     {
         public UserProfile()
         {
-            CreateMap<UserEntity, User>();
-            CreateMap<User, LoggedUserDto>();
+            CreateMap<UserEntity, UserDto>();
+            CreateMap<UserDto, LoggedUserDto>();
         }
     }
 }

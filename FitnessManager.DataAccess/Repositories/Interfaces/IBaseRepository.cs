@@ -8,7 +8,7 @@ namespace FitnessManager.DataAccess.Repositories.Interfaces
     public interface IBaseRepository<TEntity> where TEntity : class, IBaseEntity
     {
         IQueryable<TEntity> GetAll();
-        Task<TEntity> GetById(Guid id);
+        IQueryable<TEntity> GetById(Guid id);
         Task<TEntity> Add(TEntity entity);
         Task Delete(Guid id);
         Task Delete(TEntity entity);

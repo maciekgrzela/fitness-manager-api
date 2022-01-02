@@ -22,9 +22,9 @@ namespace FitnessManager.DataAccess.Repositories
             return Context.Set<TEntity>().AsNoTracking();
         }
 
-        public virtual async Task<TEntity> GetById(Guid id)
+        public virtual IQueryable<TEntity> GetById(Guid id)
         {
-            return await Context.Set<TEntity>().FindAsync(id);
+            return Context.Set<TEntity>().Where(p => p.Id == id).AsNoTracking();
         }
 
         public virtual async Task<TEntity> Add(TEntity entity)
@@ -34,7 +34,7 @@ namespace FitnessManager.DataAccess.Repositories
 
         public virtual async Task Delete(Guid id)
         {
-            var entity = await GetById(id);
+            var entity = await GetById(id).FirstOrDefaultAsync();
             await Delete(entity);
         }
 

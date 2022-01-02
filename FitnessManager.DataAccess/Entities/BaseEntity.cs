@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using FitnessManager.DataAccess.Entities.Interfaces;
 
 namespace FitnessManager.DataAccess.Entities

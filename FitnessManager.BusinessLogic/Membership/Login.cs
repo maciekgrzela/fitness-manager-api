@@ -5,7 +5,6 @@ using AutoMapper;
 using FitnessManager.BusinessLogic.Common;
 using FitnessManager.BusinessLogic.Common.Interfaces;
 using FitnessManager.DataAccess.Entities;
-using FitnessManager.Domain.Contact;
 using FitnessManager.Domain.User;
 using FluentValidation;
 using MediatR;
@@ -16,7 +15,7 @@ namespace FitnessManager.BusinessLogic.Membership
 {
     public class Login
     {
-         public class Query : IRequest<BusinessLogicResponse<Domain.User.User>>
+         public class Query : IRequest<BusinessLogicResponse<UserDto>>
         {
             public string Email { get; set; }
             public string Password { get; set; }
@@ -31,7 +30,7 @@ namespace FitnessManager.BusinessLogic.Membership
             }
         }
         
-        public class Handler : IRequestHandler<Query, BusinessLogicResponse<Domain.User.User>>
+        public class Handler : IRequestHandler<Query, BusinessLogicResponse<UserDto>>
         {
             private readonly SignInManager<UserEntity> _signInManager;
             private readonly UserManager<UserEntity> _userManager;
@@ -46,7 +45,7 @@ namespace FitnessManager.BusinessLogic.Membership
                 _mapper = mapper;
             }
             
-            public async Task<BusinessLogicResponse<Domain.User.User>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<BusinessLogicResponse<UserDto>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var user = await _userManager.Users
                     .Include(p => p.Address)
@@ -56,7 +55,7 @@ namespace FitnessManager.BusinessLogic.Membership
 
                 if (user == null)
                 {
-                    return BusinessLogicResponse<Domain.User.User>.Failure(BusinessLogicResponseResult.ResourceDoesntExist,
+                    return BusinessLogicResponse<UserDto>.Failure(BusinessLogicResponseResult.ResourceDoesntExist,
                         "User not found");
                 }
 
@@ -65,17 +64,17 @@ namespace FitnessManager.BusinessLogic.Membership
 
                 if (userRoles.Count == 0)
                 {
-                    return BusinessLogicResponse<Domain.User.User>.Failure(BusinessLogicResponseResult.UserIsNotAuthorized,
+                    return BusinessLogicResponse<UserDto>.Failure(BusinessLogicResponseResult.UserIsNotAuthorized,
                         "User is not authorized");
                 }
 
                 if (!checkPassword.Succeeded)
                 {
-                    return BusinessLogicResponse<Domain.User.User>.Failure(BusinessLogicResponseResult.UserIsNotAuthorized,
+                    return BusinessLogicResponse<UserDto>.Failure(BusinessLogicResponseResult.UserIsNotAuthorized,
                         "Incorrect user credentials");
                 }
 
-                var loggedUser = new Domain.User.User
+                var loggedUser = new UserDto
                 {
                     Id = user.Id,
                     FirstName = user.FirstName,
@@ -87,7 +86,7 @@ namespace FitnessManager.BusinessLogic.Membership
                     Token = _webTokenGenerator.CreateToken(user, userRoles[0])
                 };
                 
-                return BusinessLogicResponse<Domain.User.User>.Success(BusinessLogicResponseResult.Ok, loggedUser);
+                return BusinessLogicResponse<UserDto>.Success(BusinessLogicResponseResult.Ok, loggedUser);
             }
         }
     }

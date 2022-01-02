@@ -1,5 +1,4 @@
 ﻿using System;
-using FitnessManager.DataAccess.Entities;
 
 namespace FitnessManager.Domain.Customer
 {

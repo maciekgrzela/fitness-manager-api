@@ -22,14 +22,6 @@ namespace FitnessManager.BusinessLogic.Address
             _unitOfWork = unitOfWork;
         }
 
-        public IAddressService IAddressService
-        {
-            get => default;
-            set
-            {
-            }
-        }
-
         public async Task<IEnumerable<AddressEntity>> GetAllAsync()
         {
             return await _baseAddressRepository.GetAll()
@@ -42,7 +34,7 @@ namespace FitnessManager.BusinessLogic.Address
 
         public async Task<BusinessLogicResponse<AddressEntity>> GetByIdAsync(Guid id)
         {
-            var address = await _baseAddressRepository.GetById(id);
+            var address = await _baseAddressRepository.GetById(id).FirstOrDefaultAsync();
 
             if (address == null)
             {
@@ -77,7 +69,7 @@ namespace FitnessManager.BusinessLogic.Address
 
         public async Task<BusinessLogicResponse<AddressEntity>> UpdateAsync(Guid id, SaveAddressDto dto)
         {
-            var existingAddress = await _baseAddressRepository.GetById(id);
+            var existingAddress = await _baseAddressRepository.GetById(id).FirstOrDefaultAsync();
 
             if (existingAddress == null)
             {
@@ -99,7 +91,7 @@ namespace FitnessManager.BusinessLogic.Address
 
         public async Task<BusinessLogicResponse<AddressEntity>> DeleteAsync(Guid id)
         {
-            var existingAddress = await _baseAddressRepository.GetById(id);
+            var existingAddress = await _baseAddressRepository.GetById(id).FirstOrDefaultAsync();
 
             if (existingAddress == null)
             {

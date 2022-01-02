@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using FitnessManager.BusinessLogic.Common;
 using FitnessManager.DataAccess.Entities;
-using FitnessManager.Domain.Address;
 using FitnessManager.Domain.Customer;
 
 namespace FitnessManager.BusinessLogic.Customer.Interfaces
